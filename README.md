@@ -20,25 +20,15 @@ Project
 StudentProject
 - id
 - student_id
-- project_id
-- role_id
-
-Role
-- id
-- desc
+- project_id  (Not really needed!!!)
+- task_id
 
 Task
 - id
-- desc
-- planned_end_date
-
-StudentProjectTask
-- student_id
 - project_id
-- task_id
+- desc
 
 Assumptions
-- 1 Task is performed by 1 Student only at a time and belongs to 1 Project. 
-- A Student can be part of multiple Projects and have Multiple Tasks.
-- A Project can have multiple students and multiple tasks.
-- One Student has One Passport
+- Student can be in multiple Projects. A Project can have multiple Students. Many to Many.
+- Student can have one Passport and vice versa. One to One.
+- One Project can have Many Tasks. But one Task is associated with One Project Only. Many to One.
