@@ -4,8 +4,14 @@
 
 Student
 - id
+- passport_id
 - name
 - email
+
+Passport
+- id
+- number
+- issued_country
 
 Project
 - id
@@ -35,3 +41,4 @@ Assumptions
 - 1 Task is performed by 1 Student only at a time and belongs to 1 Project. 
 - A Student can be part of multiple Projects and have Multiple Tasks.
 - A Project can have multiple students and multiple tasks.
+- One Student has One Passport
