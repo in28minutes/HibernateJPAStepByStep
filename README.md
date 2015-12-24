@@ -27,6 +27,7 @@ Task
 - id
 - project_id
 - desc
+- start_date
 
 Assumptions
 - Student can be in multiple Projects. A Project can have multiple Students. Many to Many.
