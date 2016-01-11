@@ -80,7 +80,7 @@ Java Persistence Query language
 - JPQL syntax is similar to the syntax of SQL. 
 - JPQL works with Java Entity Classes
 
-'''
+```
 
 SELECT ... FROM ...
 [WHERE ...]
@@ -111,7 +111,7 @@ Queries with Parameters
 }) 
 
 
-'''
+```
 
 Eager and Lazy Fetching
 
