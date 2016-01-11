@@ -35,6 +35,90 @@ Assumptions
 - One Project can have Many Tasks. But one Task is associated with One Project Only. Many to One.
 
 
+##History
+JPA 2.0 was released with the specifications of JAVA EE6 => JSR 317.
+JPA 2.1 was released with the specification of JAVA EE7 => JSR 338.
+
+##Key Components
+
+- Entity : A JPA entity class is a POJO , i.e. an ordinary Java class that is annotated as having the ability to represent objects in the database
+
+- EntityManager : Manages the persistence operations on Entities.
+
+- EntityTransaction : One-to-one relationship with EntityManager. For each EntityManager, operations are maintained by EntityTransaction class.
+
+- EntityManagerFactory : Factory class of EntityManager. 
+
+##Important Annotations
+
+- @Entity : Indicates the class as an entity or a table.
+- @Table  : Indicates table name.
+
+- @Id : Identifies the column as a primary key of the Entity.
+- @GeneratedValue : Indicates that the column will be auto generated.
+- @Transient : Column will not be persisted.
+- @Column : Used to specify properties on a Entity Column
+
+- @JoinColumn : Used to specify the column used in the Join.
+
+- @ManyToMany 	Indicates a many-to-many relationship between the join Tables.
+- @ManyToOne 	Indicates a many-to-one relationship between the join Tables.
+- @OneToMany 	Indicates a one-to-many relationship between the join Tables.
+- @OneToOne 	Indicates a one-to-one relationship between the join Tables.
+
+- @NamedQueries 	Indicates list of named queries.
+- @NamedQuery 	Indicates a Query using static name.
+
+
+
+
+Find
+Delete
+
+
+Java Persistence Query language
+- JPQL syntax is similar to the syntax of SQL. 
+- JPQL works with Java Entity Classes
+
+'''
+
+SELECT ... FROM ...
+[WHERE ...]
+[GROUP BY ... [HAVING ...]]
+[ORDER BY ...]
+
+DELETE FROM ... [WHERE ...]
+ 
+UPDATE ... SET ... [WHERE ...]
+
+MAX
+Between A and B
+
+LIKE 'R%'
+ORDER BY columnname ASC
+
+@NamedQuery(query = "", name = "")\
+entitymanager.createNamedQuery
+entitymanager.createQuery("Complete Query");
+
+Queries with Parameters
+
+@NamedQueries({
+    @NamedQuery(name="name1",
+                query="Query1"),
+    @NamedQuery(name="name2",
+                query="Query2"),
+}) 
+
+
+'''
+
+Eager and Lazy Fetching
+
+
+Criterial Query - Todo
+
+
 ##About in28Minutes
 - At in28Minutes, we ask ourselves one question everyday. How do we create more effective trainings?
 - We use Problem-Solution based Step-By-Step Hands-on Approach With Practical, Real World Application Examples. 
