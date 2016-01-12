@@ -80,6 +80,93 @@ pom.xml
 	</dependencies>
 </project>
 ```
+Readme.md
+```
+- Working with both Object-Oriented software and Relational Databases can be cumbersome and time consuming. Development costs are significantly higher due to a paradigm mismatch between how data is represented in objects versus relational databases.
+- http://www.agiledata.org/essays/dataModeling101.html and http://en.wikipedia.org/wiki/Data_modeling are good starting points for understanding these data modeling principles.
+- Hibernate takes care of the mapping from Java classes to database tables, and from Java data types to SQL data types.
+- Also data query and retrieval facilities 
+- Hibernate’s design goal is to relieve the developer from 95% of common data persistence-related programming tasks
+- Hibernate is not a silver bullet. Not meant for application relying heavily on Stored Procedures.
+
+http://docs.jboss.org/hibernate/orm/5.0/userGuide/en-US/html_single/images/overview.png
+
+SessionFactory (org.hibernate.SessionFactory)
+A thread-safe (and immutable) representation of the mapping of the application domain model to a database. Acts as a factory for org.hibernate.Session instances.
+
+A SessionFactory is very expensive to create; there should be only one SessionFactory for an application for a given database. Maintains services that Hibernate uses across all Sessions such as second level caches, connection pools, transaction system integrations, etc.
+
+Session (org.hibernate.Session)
+A single-threaded, short-lived object conceptually modeling a "Unit of Work"[PoEAA].
+
+Wraps a JDBC java.sql.Connection. Acts as a factory for org.hibernate.Transaction instances. Maintains a generally "repeatable read" persistence context (first level cache) of the application's domain model.
+
+Transaction (org.hibernate.Transaction)
+A single-threaded, short-lived object used by the application to demarcate individual physical transaction boundaries. It acts as an abstraction API to isolate the application from the underling transaction system in use (JDBC, JTA, CORBA, etc).
+
+Domain Model
+The POJO should have a no-argument constructor. Both Hibernate and JPA require this.
+
+
+Hibernate Bean Validation
+
+Bidirectional relationships must follow these rules.
+- The inverse side of a bidirectional relationship must refer to its owning side by using the mappedBy element of the @OneToOne, @OneToMany, or @ManyToMany annotation. The mappedBy element designates the property or field in the entity that is the owner of the relationship.
+- The many side of many-to-one bidirectional relationships must not define the mappedBy element. The many side is always the owning side of the relationship.
+- For one-to-one bidirectional relationships, the owning side corresponds to the side that contains the corresponding foreign key.
+- For many-to-many bidirectional relationships, either side may be the owning side.
+
+Entities that use relationships often have dependencies on the existence of the other entity in the relationship. For example, a line item is part of an order; if the order is deleted, the line item also should be deleted. This is called a cascade delete relationship.
+The javax.persistence.CascadeType enumerated type defines the cascade operations that are applied in the cascade element of the relationship annotations. Table 32-1 lists the cascade operations for entities.
+
+Embeddable classes have the same rules as entity classes but are annotated with the javax.persistence.Embeddable annotation instead of @Entity.
+
+The following embeddable class, ZipCode, has the fields zip and plusFour:
+
+@Embeddable
+public class ZipCode {
+  String zip;
+  String plusFour;
+...
+}
+This embeddable class is used by the Address entity:
+
+@Entity
+public class Address {
+  @Id
+  protected long id
+  String street1;
+  String street2;
+  String city;
+  String province;
+  @Embedded
+  ZipCode zipCode;
+  String country;
+...
+}
+
+
+You can configure how the Java Persistence provider maps inherited entities to the underlying datastore by decorating the root class of the hierarchy with the annotation javax.persistence.Inheritance. The following mapping strategies are used to map the entity data to the underlying database:
+
+A single table per class hierarchy
+
+A table per concrete entity class
+
+A “join” strategy, whereby fields or properties that are specific to a subclass are mapped to a different table than the fields or properties that are common to the parent class
+
+
+The Java Persistence API provides the following methods for querying entities.
+
+The Java Persistence query language (JPQL) is a simple, string-based language similar to SQL used to query entities and their relationships. See Chapter 34, The Java Persistence Query Language for more information.
+
+The Criteria API is used to create typesafe queries using Java programming language APIs to query for entities and their relationships. See Chapter 35, Using the Criteria API to Create Queries for more information.
+
+Both JPQL and the Criteria API have advantages and disadvantages.
+
+Just a few lines long, JPQL queries are typically more concise and more readable than Criteria queries. Developers familiar with SQL will find it easy to learn the syntax of JPQL. JPQL named queries can be defined in the entity class using a Java programming language annotation or in the application’s deployment descriptor. JPQL queries are not typesafe, however, and require a cast when retrieving the query result from the entity manager. This means that type-casting errors may not be caught at compile time. JPQL queries don’t support open-ended parameters.
+
+Criteria queries allow you to define the query in the business tier of the application. Although this is also possible using JPQL dynamic queries, Criteria queries provide better performance because JPQL dynamic queries must be parsed each time they are called. Criteria queries are typesafe and therefore don’t require casting, as JPQL queries do. The Criteria API is just another Java programming language API and doesn’t require developers to learn the syntax of another query language. Criteria queries are typically more verbose than JPQL queries and require the developer to create several objects and perform operations on those objects before submitting the query to the entity manager.
+```
 src\main\java\com\in28minutes\hibernate\model\Passport.java
 ```
 package com.in28minutes.hibernate.model;
@@ -180,11 +267,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Student")
+@NamedQuery(query = "select s from Student s", name = "find all students")
 public class Student {
 
 	@Id
@@ -288,20 +377,22 @@ public class Task {
 
 }
 ```
-src\main\java\com\in28minutes\hibernate\service\StudentService.java
+src\main\java\com\in28minutes\hibernate\service\StudentRepository.java
 ```
 package com.in28minutes.hibernate.service;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.in28minutes.hibernate.model.Passport;
 import com.in28minutes.hibernate.model.Student;
 
 @Repository
-public class StudentService {
+public class StudentRepository {
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -311,9 +402,9 @@ public class StudentService {
 	}
 
 	public Student insertStudent(Student student) {
-		Passport passport = entityManager.merge(student.getPassport());
-		Student persistedStudent = entityManager.merge(student);
-		return persistedStudent;
+		if (student.getPassport() != null)
+			entityManager.merge(student.getPassport());
+		return entityManager.merge(student);
 	}
 
 	public Student updateStudent(Student student) {
@@ -321,14 +412,22 @@ public class StudentService {
 		return student;
 	}
 
+	public Student retrieveStudentsFrom(String string) {
+		return null;
+	}
+
+	public List<Student> getAllStudents() {
+		Query query = entityManager.createNamedQuery("find all students");
+		return query.getResultList();
+	}
 }
 ```
-src\main\java\com\in28minutes\hibernate\service\StudentService2.java
+src\main\java\com\in28minutes\hibernate\service\StudentService.java
 ```
 package com.in28minutes.hibernate.service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -337,17 +436,34 @@ import org.springframework.stereotype.Service;
 import com.in28minutes.hibernate.model.Student;
 
 @Service
-public class StudentService2 {
+public class StudentService {
 
 	@Autowired
-	StudentService service;
-
-	@PersistenceContext
-	private EntityManager entityManager;
+	StudentRepository service;
 
 	@Transactional
 	public Student insertStudent(Student student) {
 		return service.insertStudent(student);
+	}
+
+	@Transactional
+	public Student getStudent(final long id) {
+		return service.getStudent(id);
+	}
+
+	@Transactional
+	public Student updateStudent(Student student) {
+		return service.updateStudent(student);
+	}
+
+	@Transactional
+	public Student retrieveIndianStudents() {
+		return service.retrieveStudentsFrom("India");
+	}
+
+	@Transactional
+	public List<Student> getAllStudents() {
+		return service.getAllStudents();
 	}
 
 }
@@ -355,8 +471,10 @@ public class StudentService2 {
 src\main\resources\config\data.sql
 ```
 INSERT INTO passport VALUES (201,'L1234567','India');
+INSERT INTO passport VALUES (202,'L1234568','India');
 
 INSERT INTO student VALUES (101,201,'Jane', 'jane@doe.com');
+INSERT INTO student VALUES (102,202,'Doe', 'doe@doe.com');
 
 INSERT into project VALUES (301, 'In28Minutes Project 1');
 
@@ -523,6 +641,7 @@ package com.in28minutes.hibernate.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -542,9 +661,6 @@ public class StudentServiceTest {
 	@Autowired
 	private StudentService service;
 
-	@Autowired
-	private StudentService2 service2;
-
 	@Test
 	@Transactional
 	public void testGetStudent() {
@@ -552,6 +668,14 @@ public class StudentServiceTest {
 		System.out.println(student);
 		assertNotNull(student);
 		assertEquals(101, student.getId());
+	}
+
+	@Test
+	@Transactional
+	public void testGetStudent_GettingAPassport() {
+		Student student = service.getStudent(101);
+		assertNotNull(student.getPassport());
+		assertEquals(201, student.getPassport().getId());
 	}
 
 	@Test
@@ -569,8 +693,15 @@ public class StudentServiceTest {
 	public void testInsertStudent() {
 		Passport passport = new Passport(202, "L12344432", "India");
 		Student student = createStudent("dummy@dummy.com", "Doe", passport);
+		Student insertedStudent = service.insertStudent(student);
+		Student retrievedStudent = service.getStudent(insertedStudent.getId());
+		assertNotNull(retrievedStudent);
+	}
 
-		Student insertedStudent = service2.insertStudent(student);
+	@Test
+	public void testInsertStudent_withoutPassport() {
+		Student student = createStudent("dummy@dummy.com", "Doe", null);
+		Student insertedStudent = service.insertStudent(student);
 		Student retrievedStudent = service.getStudent(insertedStudent.getId());
 		assertNotNull(retrievedStudent);
 	}
@@ -581,6 +712,11 @@ public class StudentServiceTest {
 		student.setName(name);
 		student.setPassportId(passport);
 		return student;
+	}
+
+	@After
+	public void printAllDataAfterTest() {
+		System.out.println(service.getAllStudents());
 	}
 }
 ```
