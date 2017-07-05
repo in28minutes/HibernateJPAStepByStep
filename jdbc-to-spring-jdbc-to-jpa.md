@@ -484,9 +484,9 @@ exit /B %ERROR_CODE%
 
 
 </project>
-```java
-\src\main\java\com\example\demo\data\student\GenericAllPurposeRepository.java
 ```
+\src\main\java\com\example\demo\data\student\GenericAllPurposeRepository.java
+```java
 package com.example.demo.data.student;
 
 import javax.persistence.EntityManager;
