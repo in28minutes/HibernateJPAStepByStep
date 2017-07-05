@@ -373,7 +373,7 @@ if "%MAVEN_TERMINATE_CMD%" == "on" exit %ERROR_CODE%
 exit /B %ERROR_CODE%
 ```
 \pom.xml
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -484,7 +484,7 @@ exit /B %ERROR_CODE%
 
 
 </project>
-```
+```java
 \src\main\java\com\example\demo\data\student\GenericAllPurposeRepository.java
 ```
 package com.example.demo.data.student;
@@ -537,7 +537,7 @@ public class GenericAllPurposeRepository {
 }
 ```
 \src\main\java\com\example\demo\data\student\StudentRepository.java
-```
+```java
 package com.example.demo.data.student;
 
 import java.util.List;
@@ -585,7 +585,7 @@ public class StudentRepository {
 }
 ```
 \src\main\java\com\example\demo\data\todo\TodoDataService.java
-```
+```java
 package com.example.demo.data.todo;
 
 import java.sql.SQLException;
@@ -611,7 +611,7 @@ public interface TodoDataService {
 }
 ```
 \src\main\java\com\example\demo\data\todo\TodoJdbcService.java
-```
+```java
 package com.example.demo.data.todo;
 
 import java.sql.Connection;
@@ -771,7 +771,7 @@ public class TodoJdbcService implements TodoDataService {
 }
 ```
 \src\main\java\com\example\demo\data\todo\TodoJPAService.java
-```
+```java
 package com.example.demo.data.todo;
 
 import java.util.Date;
@@ -828,7 +828,7 @@ public class TodoJPAService implements TodoDataService {
 }
 ```
 \src\main\java\com\example\demo\data\todo\TodoMybatisService.java
-```
+```java
 package com.example.demo.data.todo;
 
 import java.sql.SQLException;
@@ -875,7 +875,7 @@ public interface TodoMybatisService
 }
 ```
 \src\main\java\com\example\demo\data\todo\TodoSpringJdbcService.java
-```
+```java
 package com.example.demo.data.todo;
 
 import java.sql.ResultSet;
@@ -980,7 +980,7 @@ public class TodoSpringJdbcService
 }
 ```
 \src\main\java\com\example\demo\DemoApplication.java
-```
+```java
 package com.example.demo;
 
 import org.slf4j.Logger;
@@ -1107,7 +1107,7 @@ public class DemoApplication implements CommandLineRunner {
 }
 ```
 \src\main\java\com\example\demo\entity\Address.java
-```
+```java
 package com.example.demo.entity;
 
 import javax.persistence.Embeddable;
@@ -1121,7 +1121,7 @@ public class Address {
 }
 ```
 \src\main\java\com\example\demo\entity\Employee.java
-```
+```java
 package com.example.demo.entity;
 
 import javax.persistence.DiscriminatorColumn;
@@ -1140,7 +1140,7 @@ public abstract class Employee {
 }
 ```
 \src\main\java\com\example\demo\entity\FullTimeEmployee.java
-```
+```java
 package com.example.demo.entity;
 
 import javax.persistence.Entity;
@@ -1151,7 +1151,7 @@ public class FullTimeEmployee extends Employee {
 }
 ```
 \src\main\java\com\example\demo\entity\PartTimeEmployee.java
-```
+```java
 package com.example.demo.entity;
 
 import javax.persistence.Entity;
@@ -1162,7 +1162,7 @@ public class PartTimeEmployee extends Employee {
 }
 ```
 \src\main\java\com\example\demo\entity\Passport.java
-```
+```java
 package com.example.demo.entity;
 
 import javax.persistence.Column;
@@ -1245,7 +1245,7 @@ public class Passport {
 }
 ```
 \src\main\java\com\example\demo\entity\Project.java
-```
+```java
 package com.example.demo.entity;
 
 import java.util.List;
@@ -1339,7 +1339,7 @@ public class Project {
 }
 ```
 \src\main\java\com\example\demo\entity\Student.java
-```
+```java
 package com.example.demo.entity;
 
 import java.util.List;
@@ -1533,7 +1533,7 @@ public class Student {
 }
 ```
 \src\main\java\com\example\demo\entity\Task.java
-```
+```java
 package com.example.demo.entity;
 
 import javax.persistence.Entity;
@@ -1601,7 +1601,7 @@ public class Task {
 }
 ```
 \src\main\java\com\example\demo\entity\Todo.java
-```
+```java
 package com.example.demo.entity;
 
 import java.util.Date;
@@ -1725,7 +1725,7 @@ public class Todo {
 }
 ```
 \src\main\java\com\example\demo\rest\TodoRestService.java
-```
+```java
 package com.example.demo.rest;
 
 import java.net.URI;
@@ -1792,7 +1792,7 @@ public class TodoRestService {
 }
 ```
 \src\main\resources\application.properties
-```
+```properties
 #logging.level.: DEBUG
 spring.h2.console.enabled: true
 
@@ -1805,7 +1805,7 @@ spring.h2.console.enabled: true
 #logging.level.org.hibernate.type=all
 ```
 \src\main\resources\data.sql
-```
+```sql
 INSERT INTO passport(id,number,issued_country)
 VALUES (201,'L1234567','India');
 INSERT INTO passport(id,number,issued_country)
