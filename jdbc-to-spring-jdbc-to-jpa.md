@@ -1830,7 +1830,7 @@ is_done BOOLEAN);
 */
 ```
 \src\test\java\com\example\demo\DemoApplicationTests.java
-```
+```java
 package com.example.demo;
 
 import org.junit.Test;
